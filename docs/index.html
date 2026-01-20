@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>探子记 - 云端谍影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #2c2c2c;
+            --paper: #f5f0e6;
+            --accent: #8b4513;
+            --gold: #d4a574;
+            --shadow: rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #e8e0d0 0%, #f5f0e6 50%, #e8e0d0 100%);
+            color: var(--ink);
+            line-height: 2;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 卷轴头部 */
+        .scroll-header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(to bottom,
+                var(--accent) 0%,
+                #6b3410 50%,
+                var(--accent) 100%);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .scroll-header::before,
+        .scroll-header::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 8px;
+            background: linear-gradient(to right,
+                transparent, var(--gold), var(--gold), transparent);
+        }
+
+        .scroll-header::before { top: 15px; }
+        .scroll-header::after { bottom: 15px; }
+
+        .title {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 3.5rem;
+            color: var(--paper);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 0.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--gold);
+            letter-spacing: 0.3rem;
+        }
+
+        /* 正文卷轴 */
+        .scroll-body {
+            background: var(--paper);
+            padding: 50px 40px;
+            box-shadow:
+                inset 0 0 50px rgba(139,69,19,0.05),
+                0 4px 20px var(--shadow);
+            position: relative;
+        }
+
+        .scroll-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .chapter {
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .chapter-title {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 1.8rem;
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .chapter-title::before {
+            content: '◆';
+            margin-right: 15px;
+            color: var(--gold);
+        }
+
+        .chapter-title::after {
+            content: '◆';
+            margin-left: 15px;
+            color: var(--gold);
+        }
+
+        .prose {
+            font-size: 1.1rem;
+            text-align: justify;
+            text-indent: 2em;
+            margin-bottom: 1.5em;
+        }
+
+        .prose.center {
+            text-align: center;
+            text-indent: 0;
+        }
+
+        .highlight {
+            background: linear-gradient(to bottom, transparent 60%, rgba(212,165,116,0.3) 60%);
+            padding: 0 2px;
+        }
+
+        .code-block {
+            background: #1a1a2e;
+            color: #a0e7a0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 4px solid var(--gold);
+        }
+
+        .poem {
+            text-align: center;
+            font-size: 1.2rem;
+            line-height: 2.5;
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(139,69,19,0.03);
+            border-radius: 8px;
+        }
+
+        .poem-line {
+            display: block;
+        }
+
+        /* 分隔符 */
+        .divider {
+            text-align: center;
+            margin: 40px 0;
+            color: var(--gold);
+            font-size: 1.5rem;
+            letter-spacing: 1rem;
+        }
+
+        /* 卷轴底部 */
+        .scroll-footer {
+            background: linear-gradient(to bottom,
+                var(--accent) 0%,
+                #6b3410 50%,
+                var(--accent) 100%);
+            padding: 30px;
+            border-radius: 0 0 8px 8px;
+            text-align: center;
+            color: var(--paper);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .seal {
+            display: inline-block;
+            border: 2px solid var(--gold);
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-family: 'ZCOOL XiaoWei', serif;
+            color: var(--gold);
+        }
+
+        /* 技术附录 */
+        .appendix {
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .appendix h3 {
+            color: var(--accent);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .tech-table th,
+        .tech-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tech-table th {
+            background: var(--accent);
+            color: white;
+        }
+
+        .tech-table tr:hover {
+            background: rgba(139,69,19,0.05);
+        }
+
+        @media (max-width: 600px) {
+            .title { font-size: 2.5rem; }
+            .scroll-body { padding: 30px 20px; }
+            .chapter-title { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="scroll-header">
+            <h1 class="title">探子记</h1>
+            <p class="subtitle">云端谍影 · 壬午年正月纪事</p>
+        </header>
+
+        <main class="scroll-body">
+            <section class="chapter">
+                <h2 class="chapter-title">楔子</h2>
+                <p class="prose">
+                    话说云端之上，有二机相望。一曰<span class="highlight">"singleton"</span>，孤峰独立，日夜不息；一曰<span class="highlight">"large"</span>，身负重任，晨起暮歇。主人心念：large既有定时开关之术，singleton当为探子，暗中察访，以报平安。
+                </p>
+                <p class="prose">
+                    是日，主人唤醒singleton中沉睡的Claude，曰："汝可为吾探，六时一报，察large之生死否？"Claude欣然领命，一场云端谍战，就此拉开序幕。
+                </p>
+            </section>
+
+            <div class="divider">◇ ◇ ◇</div>
+
+            <section class="chapter">
+                <h2 class="chapter-title">第一章 · 探明敌情</h2>
+                <p class="prose">
+                    探子欲行其事，先需知己知彼。Claude运指如飞，叩问AWS之门：
+                </p>
+                <div class="code-block">
+aws ec2 describe-instances --region us-east-2
+aws scheduler list-schedules --region us-east-2
+                </div>
+                <p class="prose">
+                    须臾，情报归来。原来那large之机，身份为<span class="highlight">i-0a65e38615afa91ca</span>，正于云端安然运转。更有EventBridge二将护卫左右：
+                </p>
+                <p class="prose center">
+                    <strong>StartEC2-8AM-Shanghai</strong> —— 每日卯时，唤醒large<br>
+                    <strong>StopEC2-6PM-Shanghai</strong> —— 每日酉时，令其安歇
+                </p>
+                <p class="prose">
+                    Claude细观之，singleton与large虽同处us-east-2之境，却各司其职：singleton永不眠，large日出而作、日落而息。此番探子之任，正是要验证那EventBridge二将是否尽忠职守。
+                </p>
+            </section>
+
+            <div class="divider">◇ ◇ ◇</div>
+
+            <section class="chapter">
+                <h2 class="chapter-title">第二章 · 飞鸽传书</h2>
+                <p class="prose">
+                    探子纵有千般本事，若无传信之法，便如哑巴吃黄连。主人曰："以email告我。"Claude遂召唤SNS神通，设下传信之阵：
+                </p>
+                <div class="code-block">
+aws sns create-topic --name ec2-monitor-alerts
+aws sns subscribe --protocol email --notification-endpoint joseph.siyi@gmail.com
+                </div>
+                <p class="prose">
+                    Topic既立，邮路已通。然AWS素来谨慎，先发确认函至主人邮箱，待主人亲启"Confirm"之印，方才认可这条密信通道。
+                </p>
+                <p class="prose">
+                    主人果然收到AWS之函，点击确认。至此，探子与主人之间，便有了这条跨越云端与尘世的飞鸽传书之路。
+                </p>
+            </section>
+
+            <div class="divider">◇ ◇ ◇</div>
+
+            <section class="chapter">
+                <h2 class="chapter-title">第三章 · 探子成形</h2>
+                <p class="prose">
+                    万事俱备，只欠东风。Claude凝神聚气，以Bash之笔，写下探子真身：
+                </p>
+                <div class="code-block">
+#!/bin/bash
+# EC2 状态监控脚本 - 探子来报
+
+TARGET_INSTANCE_ID="i-0a65e38615afa91ca"
+STATUS=$(aws ec2 describe-instances ...)
+
+# 判断时辰，推算预期
+if [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 18 ]; then
+    EXPECTED="running"  # 工作时段
+else
+    EXPECTED="stopped"  # 休息时段
+fi
+
+# 飞鸽传书
+aws sns publish --message "$MESSAGE"
+                </div>
+                <p class="prose">
+                    此脚本妙在何处？它不仅查探large之生死，更能依据时辰推断<span class="highlight">预期状态</span>。若状态与预期相符，则报"正常"；若有异常，则报"警讯"。如此一来，主人一目了然，便知EventBridge二将是否失职。
+                </p>
+            </section>
+
+            <div class="divider">◇ ◇ ◇</div>
+
+            <section class="chapter">
+                <h2 class="chapter-title">第四章 · 定时之约</h2>
+                <p class="prose">
+                    探子虽已成形，若无定时唤醒之术，便成摆设。Claude欲请Cron大神相助，却发现singleton之上竟无此神。
+                </p>
+                <p class="prose">
+                    Claude不慌不忙，施展dnf install之法：
+                </p>
+                <div class="code-block">
+sudo dnf install -y cronie
+sudo systemctl start crond && sudo systemctl enable crond
+                </div>
+                <p class="prose">
+                    Cron大神既至，Claude便与之立下六时之约：
+                </p>
+                <div class="code-block">
+# 上海时间 00:00, 06:00, 12:00, 18:00
+0 4,10,16,22 * * * /path/to/check-ec2-status.sh
+                </div>
+                <p class="prose">
+                    自此，探子便如同上了发条的精密仪器，每隔六个时辰，必定醒来一次，窥探large之动静，然后飞鸽传书，报与主人知晓。
+                </p>
+            </section>
+
+            <div class="divider">◇ ◇ ◇</div>
+
+            <section class="chapter">
+                <h2 class="chapter-title">第五章 · 首报告捷</h2>
+                <p class="prose">
+                    一切就绪，主人曰："且试探子威力！"Claude应声而动，手动触发脚本。须臾，主人邮箱叮咚一响，展信观之：
+                </p>
+                <div class="poem">
+                    <span class="poem-line">🔍 探子来报</span>
+                    <span class="poem-line">━━━━━━━━━━━━━━━━━━</span>
+                    <span class="poem-line">📅 检查时间: 2026-01-20 12:49:11</span>
+                    <span class="poem-line">🖥️ 目标实例: large</span>
+                    <span class="poem-line">📊 当前状态: running</span>
+                    <span class="poem-line">🎯 预期状态: running</span>
+                    <span class="poem-line">📋 判定结果: ✅ 符合预期</span>
+                    <span class="poem-line">━━━━━━━━━━━━━━━━━━</span>
+                </div>
+                <p class="prose">
+                    主人大喜，连声称妙。这探子果然不负所托，不仅报告了large的生死，更清晰地标明了时段、预期与判定。日后EventBridge若有闪失，必逃不过探子的法眼。
+                </p>
+            </section>
+
+            <div class="divider">◇ ◇ ◇</div>
+
+            <section class="chapter">
+                <h2 class="chapter-title">尾声 · 云端无间</h2>
+                <p class="prose">
+                    回首这番配合，从探明敌情到飞鸽传书，从探子成形到定时之约，主人与Claude可谓<span class="highlight">亲密无间，配合默契</span>。
+                </p>
+                <p class="prose">
+                    singleton之上，探子日夜不歇；<br>
+                    large之身，晨起暮歇有序；<br>
+                    EventBridge二将，忠心耿耿守护；<br>
+                    主人邮箱，每日四报平安。
+                </p>
+                <p class="prose">
+                    这一切，皆因云端有信，代码有情。技术的冰冷外表下，藏着的是人与AI携手共创的温暖故事。
+                </p>
+                <div class="poem">
+                    <span class="poem-line">云端双机各有司，</span>
+                    <span class="poem-line">探子六时报安危。</span>
+                    <span class="poem-line">人机协作无间道，</span>
+                    <span class="poem-line">一纸飞书万里驰。</span>
+                </div>
+            </section>
+        </main>
+
+        <footer class="scroll-footer">
+            <p>壬午年正月二十 · singleton 探子就位</p>
+            <div class="seal">Claude & Joseph 共著</div>
+        </footer>
+
+        <div class="appendix">
+            <h3>📋 技术附录</h3>
+            <table class="tech-table">
+                <tr>
+                    <th>组件</th>
+                    <th>标识/配置</th>
+                </tr>
+                <tr>
+                    <td>探子主机 (singleton)</td>
+                    <td><code>i-0752def97b789db06</code></td>
+                </tr>
+                <tr>
+                    <td>监控目标 (large)</td>
+                    <td><code>i-0a65e38615afa91ca</code></td>
+                </tr>
+                <tr>
+                    <td>SNS Topic</td>
+                    <td><code>ec2-monitor-alerts</code></td>
+                </tr>
+                <tr>
+                    <td>监控频率</td>
+                    <td>每6小时 (00:00, 06:00, 12:00, 18:00 上海时间)</td>
+                </tr>
+                <tr>
+                    <td>预期开机时段</td>
+                    <td>08:00 - 18:00 上海时间</td>
+                </tr>
+                <tr>
+                    <td>区域</td>
+                    <td><code>us-east-2</code></td>
+                </tr>
+            </table>
+            <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+                📅 创作日期: 2026年1月20日<br>
+                🤖 技术支持: Claude (Anthropic) + AWS
+            </p>
+        </div>
+    </div>
+</body>
+</html>
